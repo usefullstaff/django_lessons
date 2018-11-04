@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Картограф|{% block title %}{% endblock %}</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+<link rel="shortcut icon" href="/media/favicon.ico">
+
+
+</head>
+<body>
+  <header>
+	<nav>
+		<ul>
+		<li><a href="/">Главная</a></li>
+		<li><a href="/accounts/registration">Регистрация</a></li>
+			<li>
+				{% if user.is_authenticated %}
+				  <a href="/accounts/{{user.id}}">Мой кабинет</a>
+				  <a href="/accounts/logout">Выход</a>
+				  <img src="{{user.user_pic}}">
+				 {% else %}
+				  <a href="/accounts/login">Войти</a>
+				{% endif %}
+			</li>
+		</ul>
+	</nav>
+  </header>
+
+{% block content %}{% endblock %}
+
+
+
+</body>
+</html>

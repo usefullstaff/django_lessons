@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Регистрация
+{% endblock %}
+
+{% block content %}
+
+<form  method="post" action="" >
+    {% csrf_token %}
+    {{form.as_p}}
+	<input type="submit" value="Зарегестрироваться" />
+</form>
+
+{% if form.errors %}
+    <p class="error">Сожалеем, вы неправильно ввели логин или пароль</p>
+{% endif %}
+
+
+{% endblock %}
+

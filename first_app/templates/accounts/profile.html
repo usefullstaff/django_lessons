@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+   {{user.username}}
+{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+
+
+<img src="{{user.person.user_pic.url}}">
+  <form method="post" action="" >
+
+{{form.as_p}}
+    	{% csrf_token %}
+
+	<input type="submit" value="войти">
+
+  </form>
+{% endblock %}
+
+

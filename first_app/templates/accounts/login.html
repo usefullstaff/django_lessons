@@ -1,0 +1,28 @@
+
+
+{% extends 'base.html' %}
+
+  {% block title %}
+	Войти
+  {% endblock %}
+
+{% block content %}
+  <form method="post" action="" >
+    	Логин:
+  		{{form.username}}
+  		Пароль:
+  		{{form.password}}
+
+    	{% csrf_token %}
+
+	<input type="submit" value="войти">
+
+  </form>
+
+{% if form.errors %}
+  <p class="error">Сожалеем, вы неправильно ввели логин или пароль</p>
+{% endif %}
+
+
+{% endblock %}
+
