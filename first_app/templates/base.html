@@ -12,26 +12,25 @@
 
 </head>
 <body>
-  <header>
-	<nav>
-		<ul>
-		<li><a href="/">Главная</a></li>
-		<li><a href="/accounts/registration">Регистрация</a></li>
-			<li>
-				{% if user.is_authenticated %}
-				  <a href="/accounts/{{user.id}}">Мой кабинет</a>
-				  <a href="/accounts/logout">Выход</a>
-				  <img src="{{user.user_pic}}">
-				 {% else %}
-				  <a href="/accounts/login">Войти</a>
-				{% endif %}
-			</li>
-		</ul>
+  <header class="mb-5">
+	<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+		
+		<a href="/" class="navbar-brand">Главная</a></li>
+		<a href="/accounts/registration" class="lead">Регистрация</a></li>
+			{% if user.is_authenticated %}
+				<a href="/accounts/{{user.id}}" class="lead">Мой кабинет</a>
+				<a href="/accounts/logout" class="lead">Выход</a>
+		    {% else %}
+				 <a href="/accounts/login" class="lead">Войти</a>
+			{% endif %}
 	</nav>
   </header>
 
-{% block content %}{% endblock %}
 
+<div class="container">
+
+{% block content %}{% endblock %}
+</div>
 
 
 </body>
