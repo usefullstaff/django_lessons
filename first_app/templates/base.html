@@ -32,6 +32,21 @@
 {% block content %}{% endblock %}
 </div>
 
+<!--https://professorweb.ru/my/html/html5/level8/8_1.php--> 
+https://habr.com/post/193372/ 
 
+
+<script type="text/javascript"> 
+
+navigator.geolocation.getCurrentPosition( 
+	function(position) { 
+		document.getElementById('client_coords').value = [position.coords.latitude+':'+ position.coords.longitude]; 
+} 
+
+
+
+); 
+
+</script>
 </body>
 </html>

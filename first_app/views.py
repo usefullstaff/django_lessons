@@ -20,6 +20,9 @@ from django.utils.decorators import method_decorator
 
 from first_app.forms import LocForm
 
+from first_app import locator
+from django.shortcuts import render, get_object_or_404, render_to_response
+
 class LogoutView(View):
     def get(self, request):
         logout(request)
@@ -55,11 +58,29 @@ class UserRegistrationForm(FormView):
 method_decorator(login_required)
 def UserProfile(request, id):
     user = get_object_or_404(User, id=id)
-    
+
     if request.method == 'POST':
+
         form =  LocForm(request.POST)
+
         if form.is_valid():
-            
+            if request.POST['coords'] == 'no coords':
+                on_ip_loc = locator.vichisly_po_ip('195.222.85.234')
+                fex = locator.create_locations_table(on_ip_loc)
+
+
+            else:
+
+                client_loc = request.POST['coords'].split(',')
+
+                accuracy = float(client_loc[2])
+                lat = float(client_loc[0])
+                lon = float(client_loc[1])
+                fex = locator.create_locations_table({'lat':lat, 'lon':lon})
+               
+
+
+
             full_location = '{},{},{},{}'.format(form.cleaned_data['country'], 
                                         form.cleaned_data['city'], 
                                         form.cleaned_data['street'], 
@@ -79,11 +100,9 @@ def UserProfile(request, id):
     
             return HttpResponseRedirect("/accounts/{}".format(id))
     else:
-
+        
+        
         form = LocForm()
         return render(request, 'accounts/profile.html', { 'form': form})
         pass
-
-
-
 
