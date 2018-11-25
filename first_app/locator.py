@@ -6,6 +6,9 @@ from math import radians, cos, sin, asin, sqrt
 from lxml import html,etree
 
 import psycopg2
+
+from first_app import maps_sql
+#DB ={'base_name': 'obj_data', 'user_name':'locator' , 'password':'password'}
 DB ={'base_name': 'obj_data', 'user_name':'locator' , 'password':'password'}
 
 
@@ -30,6 +33,14 @@ def convert_adres(adres):
         return result
     else:
         return conect_error_message.format(request.status_code)
+    pass
+
+
+def coord_to_adr(coords):
+    req_to_yandex_api = 'https://geocode-maps.yandex.ru/1.x/?format=json&geocode={:f},{:f}&results=1'
+    request = requests.get(req_to_yandex_api.format(float(coords[0]),float(coords[1]))).json()
+    adres = request['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
+    return adres
     pass
 
 
@@ -65,13 +76,15 @@ def vichisly_po_ip(client_ip):
     lon = float(coords.find('longitude').text)
 
     return {'lat':lat,'lon':lon }
+    pass
 
 
-def create_locations_table(client_coords):
+def create_locations_table(client_coords, radius):
     psql_conn = psycopg2.connect(database = DB['base_name'], user = DB['user_name'], password = DB['password'],  port = "5432")
     cur = psql_conn.cursor()
 
-    objects_in_squad = select_obj_in_squad.format(client_coords['lat']-0.01, client_coords['lat']+0.01, client_coords['lon']-0.01, client_coords['lon']+0.01) 
+    objects_in_rad = maps_sql.found_in_radius.format(client_coords['lon'], client_coords['lat'], radius) 
 
-    cur.execute(objects_in_squad)
-    return(len(cur.fetchall()))
+    cur.execute(objects_in_rad)
+    return(cur.fetchall())
+    pass

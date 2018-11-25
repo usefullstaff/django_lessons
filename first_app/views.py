@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 from first_app.models import Person
 
-from first_app.locator import convert_adres, haversine
+from first_app.locator import convert_adres, haversine, coord_to_adr
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -22,6 +22,13 @@ from first_app.forms import LocForm
 
 from first_app import locator
 from django.shortcuts import render, get_object_or_404, render_to_response
+
+
+
+import re
+
+
+
 
 class LogoutView(View):
     def get(self, request):
@@ -61,48 +68,30 @@ def UserProfile(request, id):
 
     if request.method == 'POST':
 
-        form =  LocForm(request.POST)
-
-        if form.is_valid():
-            if request.POST['coords'] == 'no coords':
-                on_ip_loc = locator.vichisly_po_ip('195.222.85.234')
-                fex = locator.create_locations_table(on_ip_loc)
-
-
-            else:
-
-                client_loc = request.POST['coords'].split(',')
-
-                accuracy = float(client_loc[2])
-                lat = float(client_loc[0])
-                lon = float(client_loc[1])
-                fex = locator.create_locations_table({'lat':lat, 'lon':lon})
-               
-
-
-
-            full_location = '{},{},{},{}'.format(form.cleaned_data['country'], 
-                                        form.cleaned_data['city'], 
-                                        form.cleaned_data['street'], 
-                                        form.cleaned_data['building'])
-            
-            point_coords = convert_adres(full_location)
-
-            home_coords = '{},{},{},{}'.format(user.person.home_country,
-                                                user.person.home_city,
-                                                user.person.home_street,
-                                                user.person.home_building,)
-            
-            home = convert_adres(home_coords)
-
-
-            dlina = haversine(float(home['latitude']), float(home['longitude']), point_coords['latitude'], point_coords['longitude'])
-    
+        if request.POST['coords'] == 'no coords':
+            on_ip_loc = locator.vichisly_po_ip('195.222.85.234')
+            fex = locator.create_locations_table(on_ip_loc)
             return HttpResponseRedirect("/accounts/{}".format(id))
+            pass
+
+
+        else:
+
+            client_loc = request.POST['coords'].split(',')
+
+            accuracy = float(client_loc[2])
+            lat = float(client_loc[0])
+            lon = float(client_loc[1])
+            places = locator.create_locations_table({'lat':lat, 'lon':lon}, 0.01)
+
+
+
+            list_of_addr = [coord_to_adr(re.findall(r'[\d\.\d]+',place[1])[1:]) for place in places]
+
+            return render(request, 'accounts/profile.html',{'places':list_of_addr})
+            pass
     else:
         
-        
-        form = LocForm()
-        return render(request, 'accounts/profile.html', { 'form': form})
-        pass
 
+        return render(request, 'accounts/profile.html')
+        pass

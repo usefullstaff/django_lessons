@@ -16,19 +16,25 @@
 
   	<form method="post" action="" >
 		<div class="form-group">
-		 	<div class="form-group">{{form.country}}<p class="help-block">Страна</p></div>
- 			<div class="form-group">{{form.city}}<p class="help-block">Город</p></div>
- 			<div class="form-group">{{form.street}}<p class="help-block">Улица</p></div>
- 			<div class="form-group">{{form.building}}<p class="help-block">Дом</p></div>
 
  			<input type="text" name="coords" id="client_coords" value="">
 
 			{% csrf_token %}
-			<input type="submit" value="Растояние до дома" class="btn btn-primary">
+			<input type="submit" value="Найти ближайшие кафе" class="btn btn-primary">
 		</div>
 	</form>
 	</div>
 </div>
+
+
+{% for place in places %}
+<ul>
+	<li>{{place}}</li>
+</ul>
+
+
+{% endfor %}
+
 {% endblock %}
 
 

@@ -12,41 +12,76 @@
 
 </head>
 <body>
-  <header class="mb-5">
-	<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-		
-		<a href="/" class="navbar-brand">Главная</a></li>
-		<a href="/accounts/registration" class="lead">Регистрация</a></li>
-			{% if user.is_authenticated %}
-				<a href="/accounts/{{user.id}}" class="lead">Мой кабинет</a>
-				<a href="/accounts/logout" class="lead">Выход</a>
-		    {% else %}
-				 <a href="/accounts/login" class="lead">Войти</a>
-			{% endif %}
+  <header>
+	<nav>
+		<ul>
+		<li><a href="/">Главная</a></li>
+		<li><a href="/accounts/registration">Регистрация</a></li>
+			<li>
+				{% if user.is_authenticated %}
+				  <a href="/accounts/{{user.id}}">Мой кабинет</a>
+				  <a href="/accounts/logout">Выход</a>
+				  <img src="{{user.user_pic}}">
+				 {% else %}
+				  <a href="/accounts/login">Войти</a>
+				{% endif %}
+			</li>
+		</ul>
 	</nav>
   </header>
 
-
-<div class="container">
-
 {% block content %}{% endblock %}
-</div>
-
-<!--https://professorweb.ru/my/html/html5/level8/8_1.php--> 
-https://habr.com/post/193372/ 
 
 
-<script type="text/javascript"> 
+<script type="text/javascript">
+	
 
-navigator.geolocation.getCurrentPosition( 
-	function(position) { 
-		document.getElementById('client_coords').value = [position.coords.latitude+':'+ position.coords.longitude]; 
-} 
+window.onload = function() {
+	if (navigator.geolocation) {
+
+		navigator.geolocation.getCurrentPosition(
+			geolocationSuccess, geolocationFailure, 
+				
+				{
+				enableHighAccuracy: true,
+			 	timeout: 10000,
+			 	maximumAge: 60000
+			    }
+		);
+
+		console.log("Поиск начался");
+	}
+
+	else {
+		alert("Ваш браузер не поддерживает геолокацию");
+	}
+}
+
+
+function geolocationSuccess(position) {
+	document.getElementById('client_coords').value =[
+		position.coords.latitude,
+		position.coords.longitude,
+		position.coords.accuracy
+		];
+}
 
 
 
-); 
+function geolocationFailure(positionError) {
+	if(positionError) {
+		alert("Вы решили не предоставлять данные о своем местоположении, " + 
+		        "но это не проблема. Мы больше не будем запрашивать их у вас."+"Но реузльтат выйдет довольно не точный");
+
+		document.getElementById('client_coords').value = 'no coords';
+	}
+
+}
+
+
+
 
 </script>
+
 </body>
 </html>

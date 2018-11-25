@@ -7,8 +7,12 @@ COUNTRIES = (('Беларусь','Беларусь'),('Россия','Росси
 
 
 class LocForm(forms.Form):
-	country = forms.TypedChoiceField(choices=COUNTRIES)
+	country = forms.TypedChoiceField(label='Выберите страну', choices=COUNTRIES)
 	city = forms.CharField(label='City', max_length=100)
 	street = forms.CharField(label='Street', max_length=100)
 	building = forms.CharField(label='Building', max_length=100)
+
+
+
+
 

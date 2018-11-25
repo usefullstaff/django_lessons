@@ -38,8 +38,20 @@ def fill_locations_table():
 
 
 #fill_locations_table()    
+"""
+CREATE TABLE cafes(id SERIAL PRIMARY KEY, name TEXT);
+SELECT AddGeometryColumn('cafes', 'point', 4326, 'POINT', 2);
+-- сразу создаем индекс
+CREATE INDEX cafes_idx ON cafes USING gist(point);
+-- заполняем данными из OSM
+INSERT INTO cafes (name, point)
+  SELECT name, ST_Transform(way, 4326)
+  FROM planet_osm_point
+  WHERE amenity = 'cafe' AND name <> '';
 
+SELECT name, ST_AsEWKT(point) FROM cafes WHERE ST_DWithin(point,ST_GeomFromEWKT('SRID=4326;POINT(27.599893 53.896199)'),0.005);
 
+"""
 
 def vichisly_po_ip(client_ip):
     request = requests.get(ip_loactor.format(client_ip))
